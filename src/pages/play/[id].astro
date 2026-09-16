@@ -1,0 +1,113 @@
+---
+import '../../styles/global.css';
+import { fetchMatchById } from '../../utils/api.js';
+
+const { id } = Astro.params;
+
+const matchData = await fetchMatchById(id);
+
+if (!matchData) {
+  return Astro.redirect('/');
+}
+
+const matchTitle = matchData.team2
+  ? `${matchData.team1} vs ${matchData.team2}`
+  : matchData.team1;
+
+const pageTitle = `${matchTitle} – ${matchData.league} Sports Details | CrackStreams`;
+
+const pageDescription = `Explore ${matchTitle} and discover essential ${matchData.league} information, including fixture timing, scheduled date, team details, matchup context, and the latest sports updates from CrackStreams.`;
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script type="text/javascript" data-cfasync="false">
+    /*<![CDATA[/* */
+    (function () {var f = window, o = "a87676653363e404276efa598a496750", g = [["siteId", 669 - 556 + 61 + 506 - 86 + 5278574], ["minBid", 0], ["popundersPerIP", "0:1"], ["delayBetween", 0], ["default", "SElHSCBDUE0="], ["defaultPerDay", 0], ["topmostLayer", "auto"]], e = ["d3d3LmRpc3BsYXl2ZXJ0aXNpbmcuY29tL3lqcXVlcnkuaW1nYXJlYXNlbGVjdC5taW4uY3Nz", "ZDNtem9rdHk5NTFjNXcuY2xvdWRmcm9udC5uZXQvWi94Ym9vdHN0cmFwLWNvbG9ycGlja2VyLm1pbi5qcw=="], c = -1, s, h, v = function () {clearTimeout(h); c++; if (e[c] && !(1797887577000 < (new Date).getTime() && 1 < c)) {s = f.document.createElement("script"); s.type = "text/javascript"; s.async = !0; var y = f.document.getElementsByTagName("script")[0]; s.src = "https://" + atob(e[c]); s.crossOrigin = "anonymous"; s.onerror = v; s.onload = function () {clearTimeout(h); f[o.slice(0, 16) + o.slice(0, 16)] || v()}; h = setTimeout(v, 5E3); y.parentNode.insertBefore(s, y)} }; if (!f[o]) {try {Object.freeze(f[o] = g)} catch (e) { } v()} })();
+    /*]]>/* */
+  </script>
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    aclib.runPop({
+      zoneId: '11196322',
+    });
+  </script>
+  <header class="top-header">
+    <a href="/" class="top-header-title">CrackStreams</a>
+  </header>
+
+  <main class="page-container play-page-main">
+    <div class="back-nav">
+      <a href={matchData.url} class="back-link">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Back to Match Schedule</span>
+      </a>
+    </div>
+
+    <div class="ad-slot-container top-ad-slot">
+      <div class="ad-slot-box">
+        <span class="ad-slot-text"></span>
+      </div>
+    </div>
+
+    <div class="play-player-container">
+      {matchData.iframeUrl ? (
+        <div class="play-iframe-wrapper">
+          <iframe 
+            src={matchData.iframeUrl} 
+            allowfullscreen="true" 
+            allow="autoplay; fullscreen; encrypted-media" 
+            scrolling="no"
+            class="play-live-iframe"
+          ></iframe>
+        </div>
+      ) : (
+        <div class="play-placeholder-box">
+          <p>Stream will activate at match start time ({matchData.time}).</p>
+        </div>
+      )}
+    </div>
+    <div class="ad-slot-container bottom-ad-slot">
+      <div class="ad-slot-box">
+        <span class="ad-slot-text"></span>
+      </div>
+    </div>
+  </main>
+
+   <footer class="site-footer">
+    <div class="footer-container">
+      <nav class="footer-nav" aria-label="Footer Navigation">
+        <a href="/" class="footer-link">Home</a>
+        <span class="footer-dot">•</span>
+        <a href="/dmca" class="footer-link">DMCA</a>
+        <span class="footer-dot">•</span>
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+        <span class="footer-dot">•</span>
+        <a href="/contact" class="footer-link">Contact Us</a>
+      </nav>
+
+      <div class="footer-disclaimer">
+<p>
+  <strong>Disclaimer:</strong> CrackStreams is presented as an independent sports reference resource intended to provide general information about sporting schedules, matchups, teams, competitions, and related material. The website does not claim ownership, authorship, or permanent possession of broadcasts, recordings, copyrighted media, or other protected content that may be referenced. Certain names, links, listings, or references may relate to third-party websites and services that are separate from CrackStreams. Users should independently verify the legality and availability of any content within their jurisdiction and are encouraged to consult official leagues, copyright holders, licensed broadcasters, and authorized platforms for legitimate coverage. All trademarks, copyrights, logos, team identities, league names, and other intellectual property belong to their respective owners.
+</p>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright-text">© 2026 CrackStreams. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

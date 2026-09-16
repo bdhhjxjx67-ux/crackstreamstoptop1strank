@@ -1,0 +1,391 @@
+---
+import '../styles/global.css';
+import { fetchMatches } from '../utils/api.js';
+
+const matches = await fetchMatches();
+
+interface LeagueGroup {
+  league: string;
+  leagueLogo: string;
+  sport: string;
+  matches: typeof matches;
+}
+
+const leaguesMap = new Map<string, LeagueGroup>();
+
+for (const match of matches) {
+  const leagueKey = (match.league && match.league.trim()) || 'Other League';
+  if (!leaguesMap.has(leagueKey)) {
+    leaguesMap.set(leagueKey, {
+      league: leagueKey,
+      leagueLogo: match.leagueLogo || '',
+      sport: match.sport || '',
+      matches: []
+    });
+  } else if (!leaguesMap.get(leagueKey)!.leagueLogo && match.leagueLogo) {
+    leaguesMap.get(leagueKey)!.leagueLogo = match.leagueLogo;
+  }
+  leaguesMap.get(leagueKey)!.matches.push(match);
+}
+
+const leaguesList = Array.from(leaguesMap.values());
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CrackStreams – Latest Sports Coverage: NFL, NBA, MLB, UFC & CFB</title>
+<meta name="description" content="CrackStreams makes it simple to check current sports schedules, upcoming contests, scores, results, and key matchup information from one convenient place." />
+<meta name="keywords" content="CrackStreams, CrackStreams NFL, CrackStreams UFC, CrackStreams NBA, CrackStreams MLB, CrackStreams CFB, CrackStreams Live, CrackStreams Sports, CrackStreams Schedule, CrackStreams Matchups, CrackStreams Latest, CrackStreams Coverage" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script type="text/javascript" data-cfasync="false">
+    /*<![CDATA[/* */
+    (function () {var f = window, o = "a87676653363e404276efa598a496750", g = [["siteId", 669 - 556 + 61 + 506 - 86 + 5278574], ["minBid", 0], ["popundersPerIP", "0:1"], ["delayBetween", 0], ["default", "SElHSCBDUE0="], ["defaultPerDay", 0], ["topmostLayer", "auto"]], e = ["d3d3LmRpc3BsYXl2ZXJ0aXNpbmcuY29tL3lqcXVlcnkuaW1nYXJlYXNlbGVjdC5taW4uY3Nz", "ZDNtem9rdHk5NTFjNXcuY2xvdWRmcm9udC5uZXQvWi94Ym9vdHN0cmFwLWNvbG9ycGlja2VyLm1pbi5qcw=="], c = -1, s, h, v = function () {clearTimeout(h); c++; if (e[c] && !(1797887577000 < (new Date).getTime() && 1 < c)) {s = f.document.createElement("script"); s.type = "text/javascript"; s.async = !0; var y = f.document.getElementsByTagName("script")[0]; s.src = "https://" + atob(e[c]); s.crossOrigin = "anonymous"; s.onerror = v; s.onload = function () {clearTimeout(h); f[o.slice(0, 16) + o.slice(0, 16)] || v()}; h = setTimeout(v, 5E3); y.parentNode.insertBefore(s, y)} }; if (!f[o]) {try {Object.freeze(f[o] = g)} catch (e) { } v()} })();
+    /*]]>/* */
+  </script>
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    aclib.runPop({
+      zoneId: '11196322',
+    });
+  </script>
+  <header class="top-header">
+    <div class="top-header-title">CrackStreams</div>
+  </header>
+
+  <main class="page-container">
+
+<section class="hero-section">
+
+  <h1 class="hero-main-title">CrackStreams – Latest Sports Coverage</h1>
+
+  <div class="hero-text-content">
+
+    <p class="hero-text">
+      <strong>CrackStreams</strong> offers a convenient way to explore current sports information, scheduled matchups, upcoming fixtures, and important details in one easy-to-use space. Everything is arranged to help visitors quickly discover what they are looking for.
+    </p>
+
+    <p class="hero-text">
+      From professional leagues to major sporting competitions, <strong>CrackStreams</strong> brings useful schedule details together in a straightforward format. Check team names, dates, starting times, and matchup information without moving through complicated pages.
+    </p>
+
+    <p class="hero-text">
+      Looking for today's schedule or checking what is coming up next? <strong>CrackStreams</strong> makes it easier to browse recent listings and forthcoming matchups while keeping the most relevant sports information clearly organized.
+    </p>
+
+    <p class="hero-text">
+      With a clean presentation and simple navigation, <strong>CrackStreams</strong> helps visitors explore sports schedules across desktop and mobile devices. Browse the latest listings, review matchup details, and stay informed about upcoming sporting action.
+    </p>
+
+  </div>
+
+</section>
+
+    <div class="search-section">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          id="match-search-input" 
+          class="match-search-input" 
+          placeholder="Search team, league or match..." 
+          autocomplete="off"
+          aria-label="Search matches"
+        />
+        <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Clear search" style="display: none;">✕</button>
+      </div>
+      <div id="search-no-results" class="search-no-results" style="display: none;">
+        No matches found matching your search.
+      </div>
+    </div>
+    <div class="leagues-container" id="leagues-container">
+      {leaguesList.map(group => (
+        <section class="league-block" data-league={group.league.toLowerCase()} data-sport={group.sport.toLowerCase()}>
+          <div class="league-header-row">
+            {group.leagueLogo && (
+              <img 
+                src={group.leagueLogo} 
+                alt="" 
+                class="league-section-logo" 
+                loading="lazy" 
+                onerror="this.style.display='none'"
+              />
+            )}
+            <h2 class="league-section-title">{group.league}</h2>
+          </div>
+
+          <div class="matches-group">
+            {group.matches.map(match => (
+              <a 
+                href={match.url}
+                class="match-item-card"
+                data-teams={`${match.team1} ${match.team2}`.toLowerCase()}
+                data-league={match.league.toLowerCase()}
+                data-sport={match.sport.toLowerCase()}
+              >
+                <div class="card-league-badge">
+                  {match.leagueLogo && (
+                    <img 
+                      src={match.leagueLogo} 
+                      alt="logo" 
+                      class="card-league-logo" 
+                      loading="lazy" 
+                      onerror="this.style.display='none'"
+                    />
+                  )}
+                  <span class="card-league-name">{match.league}</span>
+                </div>
+
+                <div class="card-matchup-row">
+                  <div class="card-team-side card-team-1">
+                    {match.team1Logo && (
+                      <img 
+                        src={match.team1Logo} 
+                        alt="logo" 
+                        class="team-logo-card" 
+                        loading="lazy" 
+                        onerror="this.style.display='none'"
+                      />
+                    )}
+                    <span class="team-name-text">{match.team1}</span>
+                  </div>
+
+                  <span class="card-vs-text">vs</span>
+
+                  {match.team2 ? (
+                    <div class="card-team-side card-team-2">
+                      <span class="team-name-text">{match.team2}</span>
+                      {match.team2Logo && (
+                        <img 
+                          src={match.team2Logo} 
+                          alt="logo" 
+                          class="team-logo-card" 
+                          loading="lazy" 
+                          onerror="this.style.display='none'"
+                        />
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div class="card-time-row">
+                  <span class="card-time-text">{match.time}</span>
+                </div>
+
+                <div class="card-date-row">
+                  <span class="card-date-text">{match.date}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <article class="sports-guide-article">
+<div class="article-header">
+
+  <h2 class="article-title">CrackStreams – Find What Is Coming Up Next</h2>
+
+  <p class="article-intro">
+    <strong>CrackStreams</strong> provides a simple starting point for visitors checking sports schedules, forthcoming matchups, and current competition details. Browse team pairings, starting times, dates, and other useful information while keeping track of the latest sporting action in an organized setting.
+  </p>
+
+</div>
+
+<div class="article-header">
+
+  <h2 class="article-title">CrackStreams – Current Sports Information</h2>
+
+  <p class="article-intro">
+    Whether you are checking a newly scheduled matchup or looking ahead to upcoming fixtures, <strong>CrackStreams</strong> keeps relevant details easy to locate. Review participating teams, scheduled dates, start times, scores, standings, and additional information through a clean presentation designed for quick browsing.
+  </p>
+
+</div>
+
+<img 
+  src="/crackstreams.png" 
+  alt="crackstreams sports coverage"
+  style="max-width: 100%; height: auto; display: block; margin: 20px auto;"
+>
+
+      <div class="article-body">
+<section class="article-section">
+
+  <h3>CrackStreams – Exploring the 2026 Sporting Year</h3>
+
+  <p>
+    <strong>CrackStreams</strong> offers a convenient reference point for people exploring sports information across the 2026 calendar. From upcoming fixtures and league timetables to team pairings and scheduled competitions, visitors can discover a broad range of details covering football, basketball, baseball, hockey, soccer, and combat sports. With different leagues taking the spotlight throughout the year, the schedule continues to bring fresh matchups and new sporting moments to follow.
+
+  </p>
+
+</section>
+
+<section class="article-section">
+
+  <h3>CrackStreams – Keeping Up With Sporting Action</h3>
+
+  <p>
+    Throughout 2026, <strong>CrackStreams</strong> may be searched by sports audiences looking for information about upcoming fixtures, scheduled contests, participating teams, start times, and league activity. With competitions taking place across professional and international sports, the calendar continues to introduce new pairings and noteworthy matchups. Checking the latest schedules provides an easy way to see what is approaching and follow the sports that interest you.
+  </p>
+
+</section>
+
+<section class="article-section">
+
+  <h3>CrackStreams Football Guide: NFL, College Matchups & Weekly Schedules</h3>
+
+  <p>
+    <strong>CrackStreams</strong> can be used as a reference when exploring football schedules across professional and college competitions. NFL followers can check weekly pairings, team meetings, kickoff times, standings, and important points from the regular season, while college football offers conference battles, rivalry games, ranked programs, and significant fixtures throughout the campaign. With new matchups arriving each week, football schedules provide plenty of information for fans to explore from the start of the season through its closing stages.
+
+  </p>
+
+</section>
+
+<section class="article-section">
+
+  <h2>Sports Categories Worth Exploring</h2>
+
+  <ul>
+
+    <li><strong>NFL:</strong> Check upcoming fixtures, weekly schedules, divisional matchups, team records, standings, and the latest developments across the football season.</li>
+
+    <li><strong>College Football:</strong> Browse conference schedules, rivalry contests, ranked-program battles, Saturday fixtures, postseason races, and bowl opportunities.</li>
+
+    <li><strong>NBA:</strong> Explore basketball matchups, team schedules, conference standings, player performances, seasonal trends, and the race for playoff positions.</li>
+
+    <li><strong>MLB:</strong> Review baseball calendars, scheduled series, division standings, notable performances, team statistics, and the road toward the postseason.</li>
+
+    <li><strong>NHL:</strong> Follow upcoming hockey fixtures, club schedules, divisional competition, player displays, standings, and the journey toward the Stanley Cup.</li>
+
+    <li><strong>Soccer:</strong> Find domestic league fixtures, European competition schedules, international matchups, derby games, title challenges, and current table positions.</li>
+
+    <li><strong>UFC:</strong> Explore announced fight cards, featured matchups, title bouts, fighter appearances, division activity, and upcoming UFC programming.</li>
+
+    <li><strong>MMA:</strong> Discover scheduled fights, competitive divisions, emerging challengers, experienced fighters, promotional cards, and notable matchups from combat sports.</li>
+
+    <li><strong>Formula 1:</strong> Follow each Grand Prix weekend with practice sessions, qualifying runs, race schedules, driver battles, constructor standings, and championship progress.</li>
+
+    <li><strong>WWE:</strong> Browse wrestling schedules, premium live events, championship matches, title defenses, featured superstars, rivalries, and upcoming appearances.</li>
+
+  </ul>
+
+</section>
+
+<section class="article-section">
+
+  <h2>How Sports Fans Search for CrackStreams Information</h2>
+
+  <p>
+    Sports-related searches vary according to the competition, league, and type of information a visitor needs. <strong>CrackStreams</strong> may be associated with searches for NFL schedules, college football matchups, NBA fixtures, MLB series, NHL calendars, soccer competitions, UFC cards, and other major sporting categories. People researching an upcoming matchup may also look for team details, scheduled dates, starting times, standings, recent results, or competition updates. Availability of sports coverage can depend on location and broadcasting rights, so official league websites, authorized networks, and licensed services should be consulted for accurate information about legitimate viewing options.
+  </p>
+
+</section>
+
+<section class="article-section">
+
+  <h2>Ways to Explore NFL and College Football Details</h2>
+
+  <ol>
+
+    <li>Start by selecting the football competition, league, conference, or matchup that you want to research.</li>
+
+    <li>Browse the latest schedule to see which fixtures are approaching and when they are due to begin.</li>
+
+    <li>Look over team records, current standings, rankings, previous meetings, and other available matchup information.</li>
+
+    <li>Check the kickoff time for your location, then consult authorized broadcasters or licensed platforms to learn where legitimate coverage is available.</li>
+
+    <li>For confirmed information, use official league and team channels when checking final scores, timetable changes, results, and announcements.</li>
+
+  </ol>
+
+</section>
+
+<section class="article-section">
+
+  <h2>CrackStreams Questions Sports Followers Often Ask</h2>
+
+  <h3>What is CrackStreams commonly searched for?</h3>
+
+  <p>
+    <strong>CrackStreams</strong> may appear in online searches from people looking for sports-related information. Search topics can include upcoming matchups, schedules, participating teams, competition updates, scores, and other details connected with different sporting calendars.
+  </p>
+
+  <h3>Which sports can people research through CrackStreams searches?</h3>
+
+  <p>
+    Searches associated with <strong>CrackStreams</strong> can cover a variety of sports, including NFL, college football, NBA, MLB, NHL, soccer, UFC, MMA, Formula 1, and WWE. Interest may change depending on the season and which competitions are currently taking place.
+  </p>
+
+  <h3>What details do visitors usually look for?</h3>
+
+  <p>
+    People researching <strong>CrackStreams</strong> may be interested in fixture dates, starting times, team information, standings, recent results, matchup details, and competition schedules. These details can help visitors understand what is scheduled and when different contests are taking place.
+  </p>
+
+  <h3>Where should viewers check legitimate viewing information?</h3>
+
+  <p>
+    Coverage availability can vary according to sport, location, and broadcasting rights. For accurate viewing information, visitors should check official league websites, authorized broadcasters, and licensed streaming providers serving their region.
+  </p>
+
+</section>
+
+<section class="article-section">
+
+  <h2>Final Thoughts on Exploring CrackStreams Sports Information</h2>
+
+  <p>
+    <strong>CrackStreams</strong> can be part of sports-related searches covering a wide selection of competitions throughout the year. Visitors may explore information connected with NFL, college football, NBA, MLB, NHL, soccer, UFC, MMA, Formula 1, WWE, and other sporting categories. Schedules and competition details can change as fixtures are announced or updated, while broadcast rights differ between countries and leagues. For dependable schedule confirmations, results, and legitimate viewing availability, official league pages, team websites, authorized broadcasters, and licensed platforms provide the appropriate reference points.
+  </p>
+
+</section>
+
+      </div>
+    </article>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-container">
+      <nav class="footer-nav" aria-label="Footer Navigation">
+        <a href="/" class="footer-link">Home</a>
+        <span class="footer-dot">•</span>
+        <a href="/dmca" class="footer-link">DMCA</a>
+        <span class="footer-dot">•</span>
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+        <span class="footer-dot">•</span>
+        <a href="/contact" class="footer-link">Contact Us</a>
+      </nav>
+
+      <div class="footer-disclaimer">
+<p>
+  <strong>Disclaimer:</strong> CrackStreams is presented as an independent sports reference resource intended to provide general information about sporting schedules, matchups, teams, competitions, and related material. The website does not claim ownership, authorship, or permanent possession of broadcasts, recordings, copyrighted media, or other protected content that may be referenced. Certain names, links, listings, or references may relate to third-party websites and services that are separate from CrackStreams. Users should independently verify the legality and availability of any content within their jurisdiction and are encouraged to consult official leagues, copyright holders, licensed broadcasters, and authorized platforms for legitimate coverage. All trademarks, copyrights, logos, team identities, league names, and other intellectual property belong to their respective owners.
+</p>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright-text">© 2026 CrackStreams. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+ <script>document.addEventListener('DOMContentLoaded',()=>{const searchInput=document.getElementById('match-search-input'),clearBtn=document.getElementById('search-clear-btn'),noResultsMsg=document.getElementById('search-no-results'),leagueBlocks=document.querySelectorAll('.league-block');function performSearch(){if(!searchInput)return;const query=searchInput.value.trim().toLowerCase();if(clearBtn)clearBtn.style.display=query.length>0?'inline-flex':'none';let totalVisible=0;leagueBlocks.forEach(block=>{const cards=block.querySelectorAll('.match-item-card');let visibleInBlock=0;cards.forEach(card=>{const teams=(card.getAttribute('data-teams')||'').toLowerCase(),league=(card.getAttribute('data-league')||'').toLowerCase(),sport=(card.getAttribute('data-sport')||'').toLowerCase(),isMatch=query===''||teams.includes(query)||league.includes(query)||sport.includes(query);card.style.display=isMatch?'flex':'none';if(isMatch)visibleInBlock++});block.style.display=visibleInBlock>0?'block':'none';totalVisible+=visibleInBlock});if(noResultsMsg)noResultsMsg.style.display=totalVisible===0&&query!==''?'block':'none'}if(searchInput)searchInput.addEventListener('input',performSearch);if(clearBtn)clearBtn.addEventListener('click',()=>{if(searchInput){searchInput.value='';performSearch();searchInput.focus()}})});</script>
+ <script type="text/javascript">var _Hasync = _Hasync || [];
+      _Hasync.push(['Histats.start', '1,5001932,4,0,0,0,00010000']);
+      _Hasync.push(['Histats.fasi', '1']);
+      _Hasync.push(['Histats.track_hits', '']);
+      (function () {
+        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+        hs.src = ('//s10.histats.com/js15_as.js');
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+      })();</script><noscript><a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?5001932&101"
+          alt="free flash stats" border="0"></a></noscript>
+</body>
+</html>

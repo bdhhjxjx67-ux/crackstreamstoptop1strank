@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "astrotheme-streaming",
+  "compatibility_date": "2026-02-22",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "SITE_NAME": "CrackStreams",
+    "API": "https://opensheet.elk.sh/1gHshryM9mQFVYC2AeSj6bhcKW8_g69EBbMPI0F8s53Y/1",
+    "PUBLIC_BASE_URL": "https://crackstreams.pages.dev"
+  }
+}
